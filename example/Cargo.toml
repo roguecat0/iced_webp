@@ -5,9 +5,9 @@ edition = "2021"
 authors = ["tarkah <admin@tarkah.dev>"]
 
 [features]
-default = ["iced_gif/default"]
-tokio = ["iced_gif/tokio", "iced/tokio"]
+default = ["iced_webp/default"]
+tokio = ["iced_webp/tokio", "iced/tokio"]
 
 [dependencies]
-iced_gif = { path = "../", default-features = false }
+iced_webp = { path = "../", default-features = false }
 iced = { version = "0.13", features = [ "image" ] }

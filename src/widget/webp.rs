@@ -1,4 +1,4 @@
-//! Display a GIF in your user interface
+//! Display a WEBP in your user interface
 use std::fmt;
 use std::io;
 use std::path::Path;
@@ -14,7 +14,7 @@ use iced_widget::core::{
     Rectangle, Rotation, Shell, Size, Vector, Widget,
 };
 use iced_widget::runtime::Task;
-use image_rs::codecs::gif;
+use image_rs::codecs::webp::WebPDecoder as Decoder;
 use image_rs::{AnimationDecoder, ImageDecoder};
 
 #[cfg(not(feature = "tokio"))]
@@ -22,7 +22,7 @@ use iced_futures::futures::{AsyncRead, AsyncReadExt};
 #[cfg(feature = "tokio")]
 use tokio::io::{AsyncRead, AsyncReadExt};
 
-/// Error loading or decoding a gif
+/// Error loading or decoding a webp
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// Decode error
@@ -33,7 +33,7 @@ pub enum Error {
     Io(#[from] std::io::Error),
 }
 
-/// The frames of a decoded gif
+/// The frames of a decoded webp
 pub struct Frames {
     first: Frame,
     frames: Vec<Frame>,
@@ -85,7 +85,7 @@ impl Frames {
 
     /// Decode [`Frames`] from the supplied bytes
     pub fn from_bytes(bytes: Vec<u8>) -> Result<Self, Error> {
-        let decoder = gif::GifDecoder::new(io::Cursor::new(bytes))?;
+        let decoder = Decoder::new(io::Cursor::new(bytes))?;
 
         let total_bytes = decoder.total_bytes();
 
@@ -143,9 +143,9 @@ impl From<Frame> for Current {
     }
 }
 
-/// A frame that displays a GIF while keeping aspect ratio
+/// A frame that displays a WEBP while keeping aspect ratio
 #[derive(Debug)]
-pub struct Gif<'a> {
+pub struct Webp<'a> {
     frames: &'a Frames,
     width: Length,
     height: Length,
@@ -155,10 +155,10 @@ pub struct Gif<'a> {
     opacity: f32,
 }
 
-impl<'a> Gif<'a> {
-    /// Creates a new [`Gif`] with the given [`Frames`]
+impl<'a> Webp<'a> {
+    /// Creates a new [`Webp`] with the given [`Frames`]
     pub fn new(frames: &'a Frames) -> Self {
-        Gif {
+        Webp {
             frames,
             width: Length::Shrink,
             height: Length::Shrink,
@@ -169,13 +169,13 @@ impl<'a> Gif<'a> {
         }
     }
 
-    /// Sets the width of the [`Gif`] boundaries.
+    /// Sets the width of the [`Webp`] boundaries.
     pub fn width(mut self, width: Length) -> Self {
         self.width = width;
         self
     }
 
-    /// Sets the height of the [`Gif`] boundaries.
+    /// Sets the height of the [`Webp`] boundaries.
     pub fn height(mut self, height: Length) -> Self {
         self.height = height;
         self
@@ -211,7 +211,7 @@ impl<'a> Gif<'a> {
     }
 }
 
-impl<'a, Message, Theme, Renderer> Widget<Message, Theme, Renderer> for Gif<'a>
+impl<'a, Message, Theme, Renderer> Widget<Message, Theme, Renderer> for Webp<'a>
 where
     Renderer: image::Renderer<Handle = Handle>,
 {
@@ -234,10 +234,10 @@ where
     fn diff(&self, tree: &mut Tree) {
         let state = tree.state.downcast_mut::<State>();
 
-        // Reset state if new gif Frames is used w/
+        // Reset state if new webp Frames is used w/
         // same state tree.
         //
-        // Total bytes of the gif should be a good enough
+        // Total bytes of the webp should be a good enough
         // proxy for it changing.
         if state.total_bytes != self.frames.total_bytes {
             *state = State {
@@ -362,11 +362,11 @@ where
     }
 }
 
-impl<'a, Message, Theme, Renderer> From<Gif<'a>> for Element<'a, Message, Theme, Renderer>
+impl<'a, Message, Theme, Renderer> From<Webp<'a>> for Element<'a, Message, Theme, Renderer>
 where
     Renderer: image::Renderer<Handle = Handle> + 'a,
 {
-    fn from(gif: Gif<'a>) -> Element<'a, Message, Theme, Renderer> {
-        Element::new(gif)
+    fn from(webp: Webp<'a>) -> Element<'a, Message, Theme, Renderer> {
+        Element::new(webp)
     }
 }

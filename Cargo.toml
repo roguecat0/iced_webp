@@ -1,11 +1,11 @@
 [package]
-name = "iced_gif"
+name = "iced_webp"
 version = "0.13.0"
 edition = "2021"
 authors = ["tarkah <admin@tarkah.dev>"]
-description = "A GIF widget for Iced"
+description = "A WEBP widget for Iced"
 license = "MIT"
-repository = "https://github.com/tarkah/iced_gif"
+repository = "https://github.com/tarkah/iced_webp"
 
 [workspace]
 default-members = [
@@ -37,4 +37,4 @@ features = ["fs", "io-util"]
 [dependencies.image_rs]
 package = "image"
 version = "0.24"
-features = ["gif"]
+features = ["webp"]

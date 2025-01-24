@@ -1,8 +1,8 @@
-pub mod gif;
+pub mod webp;
 
-pub use gif::Gif;
+pub use webp::Webp;
 
 /// Creates a new [`Gif`] with the given [`gif::Frames`]
-pub fn gif(frames: &gif::Frames) -> Gif {
-    Gif::new(frames)
+pub fn webp(frames: &webp::Frames) -> Webp {
+    Webp::new(frames)
 }
